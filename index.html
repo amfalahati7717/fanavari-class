@@ -76,11 +76,13 @@ async function signup(){
   const {data,error}=await sb.auth.signUp({
     email,
     password,
-    options:{
-      data:{
-        full_name:fullName,
-        class_id:classId
-      }
+options:{
+  emailRedirectTo: 'https://amfalahati7717.github.io/fanavari-class/',
+  data:{
+    full_name:fullName,
+    class_id:classId
+  }
+}
     }
   });
 
