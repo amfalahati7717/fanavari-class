@@ -6,7 +6,16 @@
 <button class="alt" onclick="recover()">فراموشی رمز عبور</button>
 <button class="alt" onclick="showSignup()">ثبت‌نام دانش‌آموز</button>
 <div id="authMsg" class="muted"></div></section>
-<section id="resetPassword" class="card hidden"><h2>تنظیم رمز عبور جدید</h2><p class="muted">لینک بازیابی معتبر است. رمز جدید را دو بار وارد کن.</p><div class="grid"><div class="field"><label>رمز عبور جدید</label><input id="newPassword" type="password" autocomplete="new-password" minlength="6" placeholder="حداقل ۶ نویسه"></div><div class="field"><label>تکرار رمز عبور جدید</label><input id="confirmPassword" type="password" autocomplete="new-password" minlength="6" placeholder="رمز را دوباره وارد کن"></div></div><button onclick="updatePassword()">ذخیره رمز جدید</button><div id="resetMsg" class="muted"></div></section>
+<section id="signup" class="card hidden">
+<h2>ثبت‌نام دانش‌آموز</h2>
+<div class="field"><label>نام و نام خانوادگی</label><input id="signupName" required></div>
+<div class="field"><label>ایمیل</label><input id="signupEmail" type="email" required></div>
+<div class="field"><label>رمز عبور (حداقل ۶ نویسه)</label><input id="signupPassword" type="password" minlength="6" required></div>
+<div class="field"><label>کلاس</label><select id="signupClass" required><option value="">در حال بارگذاری کلاس‌ها...</option></select></div>
+<button onclick="signup()">ایجاد حساب دانش‌آموز</button>
+<button class="alt" onclick="showLogin()">بازگشت به ورود</button>
+<div id="signupMsg" class="muted"></div>
+</section><section id="resetPassword" class="card hidden"><h2>تنظیم رمز عبور جدید</h2><p class="muted">لینک بازیابی معتبر است. رمز جدید را دو بار وارد کن.</p><div class="grid"><div class="field"><label>رمز عبور جدید</label><input id="newPassword" type="password" autocomplete="new-password" minlength="6" placeholder="حداقل ۶ نویسه"></div><div class="field"><label>تکرار رمز عبور جدید</label><input id="confirmPassword" type="password" autocomplete="new-password" minlength="6" placeholder="رمز را دوباره وارد کن"></div></div><button onclick="updatePassword()">ذخیره رمز جدید</button><div id="resetMsg" class="muted"></div></section>
 <section id="app" class="hidden"><div class="card"><div id="profileLine"></div><div class="nav" id="nav"></div><div id="view"></div></div></section><div id="toast" class="status hidden"></div>
 <section class="card"><h3>راهنمای مهم</h3><p class="muted">اتصال پروژه از قبل در فرم وارد شده است. جدول‌ها و سیاست‌های دسترسی پروژه موجود را دوباره ایجاد نکن. برای ورود، حساب کاربر باید در Authentication وجود داشته باشد و ردیف متناظر آن در جدول profiles ثبت شده باشد. کلید Publishable برای مرورگر مناسب است؛ هرگز service_role را در این فایل قرار نده. فایل‌ها و اعلان زنده هنوز به تنظیمات Storage/Realtime جداگانه نیاز دارند.</p></section></main>
 <script>
