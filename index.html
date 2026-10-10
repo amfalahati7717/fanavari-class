@@ -57,10 +57,12 @@ async function loadSignupClasses(){
 }
 
 async function signup(){
+async function signup(){
   if(!sb){
     msg('signupMsg','اتصال به سامانه برقرار نیست.');
     return;
   }
+
   const fullName=$('signupName').value.trim();
   const email=$('signupEmail').value.trim();
   const password=$('signupPassword').value;
@@ -74,15 +76,14 @@ async function signup(){
   msg('signupMsg','در حال ایجاد حساب...');
 
   const {data,error}=await sb.auth.signUp({
-    email,
-    password,
-options:{
-  emailRedirectTo: 'https://amfalahati7717.github.io/fanavari-class/',
-  data:{
-    full_name:fullName,
-    class_id:classId
-  }
-}
+    email: email,
+    password: password,
+    options: {
+      emailRedirectTo: 'https://amfalahati7717.github.io/fanavari-class/',
+      data: {
+        full_name: fullName,
+        class_id: classId
+      }
     }
   });
 
@@ -98,7 +99,8 @@ options:{
     msg('signupMsg','حساب ثبت شد. اگر تأیید ایمیل فعال باشد، ایمیل خود را تأیید کن؛ سپس از صفحه ورود وارد شو.',true);
     $('signupPassword').value='';
   }
-}async function login(){if(!sb){msg('authMsg','ابتدا اتصال Supabase را تنظیم کن.');return}let {data,error}=await sb.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error){msg('authMsg',error.message);return}await onSession(data.session)}async function recover(){let email=$('email').value.trim();if(!email){msg('authMsg','ابتدا ایمیل حساب را وارد کن.');return}if(!sb){msg('authMsg','اتصال Supabase برقرار نیست. صفحه را تازه‌سازی کن.');return}let redirectTo=location.origin+location.pathname;let {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo});msg('authMsg',error?error.message:'ایمیل بازیابی ارسال شد. صندوق ورودی و پوشه هرزنامه را بررسی کن؛ سپس لینک را باز کن تا رمز جدید را تعیین کنی.',!error)}
+}
+async function login(){if(!sb){msg('authMsg','ابتدا اتصال Supabase را تنظیم کن.');return}let {data,error}=await sb.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error){msg('authMsg',error.message);return}await onSession(data.session)}async function recover(){let email=$('email').value.trim();if(!email){msg('authMsg','ابتدا ایمیل حساب را وارد کن.');return}if(!sb){msg('authMsg','اتصال Supabase برقرار نیست. صفحه را تازه‌سازی کن.');return}let redirectTo=location.origin+location.pathname;let {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo});msg('authMsg',error?error.message:'ایمیل بازیابی ارسال شد. صندوق ورودی و پوشه هرزنامه را بررسی کن؛ سپس لینک را باز کن تا رمز جدید را تعیین کنی.',!error)}
 async function updatePassword(){if(!sb){msg('resetMsg','اتصال Supabase برقرار نیست. صفحه را تازه‌سازی کن.');return}let p=$('newPassword').value, c=$('confirmPassword').value;if(p.length<6){msg('resetMsg','رمز عبور باید حداقل ۶ نویسه داشته باشد.');return}if(p!==c){msg('resetMsg','رمز عبور و تکرار آن یکسان نیستند.');return}let {error}=await sb.auth.updateUser({password:p});if(error){msg('resetMsg','ذخیره رمز انجام نشد: '+error.message);return}msg('resetMsg','رمز عبور با موفقیت تغییر کرد. اکنون می‌توانی با رمز جدید وارد شوی.',true);$('newPassword').value='';$('confirmPassword').value='';await sb.auth.signOut();$('resetPassword').classList.add('hidden');$('auth').classList.remove('hidden');$('authMsg').textContent='رمز جدید ذخیره شد؛ با رمز جدید وارد شو.'}async function onSession(session){user=session.user;let {data,error}=await sb.from('profiles').select('id,full_name,role,class_id').eq('id',user.id).maybeSingle();if(error){msg('authMsg','ورود انجام شد، اما خواندن پروفایل خطا داد: '+error.message);return}if(!data){msg('authMsg','حساب وارد شد ولی در جدول profiles پروفایل ندارد. برای این کاربر یک ردیف بساز.');return}profile=data;$('auth').classList.add('hidden');$('config').classList.add('hidden');$('app').classList.remove('hidden');$('logout').classList.remove('hidden');$('who').textContent=esc(profile.full_name||user.email);$('profileLine').innerHTML='<b>'+esc(profile.full_name||'کاربر')+'</b> · نقش: '+(profile.role==='teacher'?'دبیر':'دانش‌آموز');drawNav();await render()}
 async function logout(){if(sb)await sb.auth.signOut();user=null;profile=null;$('app').classList.add('hidden');$('auth').classList.remove('hidden');$('logout').classList.add('hidden');$('who').textContent=''}function drawNav(){let items=profile.role==='teacher'?[['home','خانه'],['classes','کلاس‌ها'],['assignments','تکالیف'],['submissions','تحویل تکالیف'],['grades','نمرات'],['attendance','حضور و غیاب'],['messages','گفت‌وگو']]:[['home','خانه'],['assignments','تکالیف'],['submissions','تحویل‌های من'],['grades','نمرات من'],['attendance','حضور و غیاب'],['messages','گفت‌وگو']];$('nav').innerHTML=items.map(([k,t])=>`<button class="${tab===k?'active':''}" onclick="go('${k}')">${t}</button>`).join('')}function go(t){tab=t;drawNav();render()}
 async function render(){let v=$('view');v.innerHTML='<p class="muted">در حال بارگذاری…</p>';try{if(tab==='home')v.innerHTML='<h3>به سامانه کلاس فناوری خوش آمدید</h3><p class="muted">اطلاعات این صفحه از پایگاه آنلاین خوانده می‌شود.</p><button onclick="go(\''+(profile.role==='teacher'?'classes':'assignments')+'\')">شروع کار</button>';else if(tab==='classes')await classesView(v);else if(tab==='assignments')await assignmentsView(v);else if(tab==='submissions')await submissionsView(v);else if(tab==='grades')await gradesView(v);else if(tab==='attendance')await attendanceView(v);else if(tab==='messages')await messagesView(v)}catch(e){v.innerHTML='<div class="status">خطا: '+esc(e.message||e)+'</div>'}}
